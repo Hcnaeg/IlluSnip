@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="5cc9c797-b305-48b8-bc06-096b0afdcb21" name="myssh">
+        <fileTransfer rootFolder="/home/wqluo" accessType="SFTP" host="114.212.190.189" port="22" sshConfigId="a4d5fe00-9e0b-417c-b5fa-0d2c863b5d26" sshConfig="wqluo@114.212.190.189">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

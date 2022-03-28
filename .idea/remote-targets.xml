@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteTargetsManager">
+    <targets>
+      <target name="wqluo@114.212.190.189" type="ssh/sftp" uuid="9a833d34-12ae-45ce-b2d5-baf88a7950f5">
+        <config>
+          <option name="projectRootOnTarget" value="/home/wqluo/IlluSnip" />
+          <option name="serverName" value="wqluo@114.212.190.189" />
+        </config>
+        <ContributedStateBase type="JavaLanguageRuntime">
+          <config>
+            <option name="homePath" value="/usr/java8/jdk1.8.0_65" />
+            <option name="javaVersionString" value="1.8.0_65" />
+          </config>
+        </ContributedStateBase>
+      </target>
+    </targets>
+  </component>
+</project>
