@@ -49,7 +49,8 @@ public class OPTRank {
 
         try{
             Connection connection = new DBUtil().conn;
-            String str = String.format("SELECT * FROM triple_all WHERE file_id=%d",local_id);
+//            String str = String.format("SELECT * FROM triple_all WHERE file_id=%d",local_id);
+            String str = String.format("SELECT * FROM triple_deduplicate WHERE dataset_id=%d",local_id);
             Statement stmt = connection.createStatement();
             stmt.setFetchSize(1000);
             ResultSet rst = stmt.executeQuery(str);

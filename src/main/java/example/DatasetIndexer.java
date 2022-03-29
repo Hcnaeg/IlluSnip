@@ -30,7 +30,8 @@ public class DatasetIndexer {
     public static int getTypeID(int local_id){
         int typeID = -1;
         try{
-            String str = String.format("SELECT * FROM rdf_term WHERE file_id=%d AND iri='%s';",local_id,"http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+//            String str = String.format("SELECT * FROM rdf_term WHERE file_id=%d AND iri='%s';",local_id,"http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+            String str = String.format("SELECT * FROM rdf_term_deduplicate WHERE dataset_id=%d AND iri='%s';",local_id,"http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
             Statement stmt = connection.createStatement();
             ResultSet rst = stmt.executeQuery(str);
 
@@ -48,7 +49,8 @@ public class DatasetIndexer {
     public static HashSet<Integer> getLiteralSet(int local_id){
         HashSet<Integer> literals = new HashSet<Integer>();
 
-        String str = String.format("SELECT id FROM rdf_term WHERE file_id=%d AND kind=2",local_id);
+//        String str = String.format("SELECT id FROM rdf_term WHERE file_id=%d AND kind=2",local_id);
+        String str = String.format("SELECT id FROM rdf_term_deduplicate WHERE dataset_id=%d AND kind=2",local_id);
         try{
             Statement statement = connection.createStatement();
             ResultSet rst = statement.executeQuery(str);

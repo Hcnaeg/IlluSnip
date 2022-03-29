@@ -73,7 +73,8 @@ public class generateTest {
             Connection conn = JdbcUtil.getConnection(GlobalVariances.REMOTE);
             Connection dashConn = JdbcUtil.getConnection(GlobalVariances.LOCAL);
             dashConn.setAutoCommit(false);
-            String pidStr = "select * from pid where dataset_id in (select dataset_id from pid group by dataset_id having count(*)=1)";
+//            String pidStr = "select * from pid where dataset_id in (select dataset_id from pid group by dataset_id having count(*)=1)";
+            String pidStr = "select dataset_id from pid group by dataset_id having count(dataset_id)>1";
             Statement pidStmt = conn.createStatement();
             ResultSet pidRst = pidStmt.executeQuery(pidStr);
 
@@ -81,13 +82,14 @@ public class generateTest {
             while(pidRst.next()){
                 try{
                     int dataset_id = pidRst.getInt("dataset_id");
-                    int file_id = pidRst.getInt("file_id");
+//                    int file_id = pidRst.getInt("file_id");
                     if(dones.contains(dataset_id)) continue;
 
 
-                    OPTRank finder = new OPTRank(file_id, MAX_SIZE); // ======== MAX_SIZE ========
+//                    OPTRank finder = new OPTRank(file_id, MAX_SIZE); // ======== MAX_SIZE ========
+                    OPTRank finder = new OPTRank(dataset_id, MAX_SIZE); // ======== MAX_SIZE ========
                     List<ResultBean> runningInfos = new ArrayList<>();
-                    long runTime = timoutService(finder, file_id, runningInfos, TIMEOUT);//finder
+                    long runTime = timoutService(finder, dataset_id, runningInfos, TIMEOUT);//finder
                     boolean timeout = (runTime == Long.MAX_VALUE);
                     if (timeout) {
                         System.out.println("Time out: " + dataset_id);
@@ -99,14 +101,14 @@ public class generateTest {
                         }
 
                         String snippetstr = result.toString().replace("[","").replace("]","");
-                        ResultBean bean = new ResultBean(file_id, snippetstr, TIMEOUT);
-                        bean.setDataset(file_id);
+                        ResultBean bean = new ResultBean(dataset_id, snippetstr, TIMEOUT);
+                        bean.setDataset(dataset_id);
                         saveResult(bean, timeFilePath);
                         continue;
                     }
 
                     ResultBean middleRuntimeBean = runningInfos.get(0);
-                    middleRuntimeBean.setDataset(file_id);
+                    middleRuntimeBean.setDataset(dataset_id);
                     saveResult(middleRuntimeBean, timeFilePath);
 
 
@@ -241,8 +243,11 @@ public class generateTest {
 
     public static void main(String[] args){
         generateTest test = new generateTest();
-        test.getResultBase("/home/wqluo/file/opt_max_result.tsv");
+//        test.getResultBase("C:\\Users\\17223\\Desktop\\websoft\\code\\IlluSnip\\src\\main\\resources\\opt_max_deduplicate.txt");
+        test.getResultBase("/home/wqluo/file/opt_max_result_deduplicate.txt");
+//        test.getResultBase("/home/wqluo/file/opt_max_result.tsv");
 //        test.getResultBase("IlluSnip-file-1088.txt");
+
 //        test.getResult(Integer.parseInt(args[0]), Integer.parseInt(args[1]), PATHS.FileBase + "file/SnippetResultCount90.txt", PATHS.ProjectData + "IlluSnipResult90/");
 //        test.getResult(Integer.parseInt(args[0]), Integer.parseInt(args[1]), PATHS.FileBase + "file/SnippetResultCount80.txt", PATHS.ProjectData + "IlluSnipResult80/");
 //        test.getResultBase(Integer.parseInt(args[0]), Integer.parseInt(args[1]), PATHS.ProjectData + "IlluSnipResult20/");
