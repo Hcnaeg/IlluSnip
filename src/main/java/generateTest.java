@@ -14,52 +14,52 @@ public class generateTest {
     private final static int MAX_SIZE = 171; //20;
     Connection dashConn = JdbcUtil.getConnection(GlobalVariances.LOCAL);
 
-    private void getResult(int start, int end, String sizeFile, String resultFolder){
-        List<List<Integer>> dataset2Size = ReadFile.readInteger(sizeFile, "\t");
-        for (List<Integer> ds: dataset2Size){
-            int dataset = ds.get(0);
-            if (dataset < start || dataset > end) {
-                continue;
-            }
-            int MAX_SIZE = ds.get(1);
-            System.out.println("========" + dataset + ": " + MAX_SIZE  + "========");
-            OPTRank finder = new OPTRank(dataset, MAX_SIZE); // ======== MAX_SIZE ========
-            List<ResultBean> runningInfos = new ArrayList<>();
-            long runTime = timoutService(finder, dataset, runningInfos, TIMEOUT);//finder
-            boolean timeout = (runTime == Long.MAX_VALUE);
-            if (timeout) {
-                System.out.println("Time out");
-                Set<Integer> ids = new HashSet<>();
-                StringBuilder triplestr = new StringBuilder();
-                Set<OPTTriple> result = finder.result;
-                if (result.isEmpty()) {
-                    result = finder.currentSnippet;
-                }
-                for (OPTTriple iter: result){
-                    int sid = iter.getSid();
-                    int oid = iter.getOid();
-                    int pid = iter.getPid();
-                    ids.add(sid);
-                    ids.add(oid);
-                    triplestr.append(sid).append(" ").append(oid).append(" ").append(pid).append(",");
-                }
-                StringBuilder idstr = new StringBuilder();
-                for (int iter: ids){
-                    idstr.append(iter).append(",");
-                }
-                String snippetstr = "";
-                if (!idstr.toString().equals("")) {
-                    snippetstr = idstr.substring(0, idstr.length() - 1) + ";" + triplestr.substring(0, triplestr.length() - 1);
-                }
-                ResultBean bean = new ResultBean(dataset, snippetstr, TIMEOUT);
-                saveResult(bean, resultFolder);
-                continue;
-            }
-            System.out.println("Finish in: " + runTime + " ms. ");
-            ResultBean middleRuntimeBean = runningInfos.get(0);
-            saveResult(middleRuntimeBean, resultFolder);
-        }
-    }
+//    private void getResult(int start, int end, String sizeFile, String resultFolder){
+//        List<List<Integer>> dataset2Size = ReadFile.readInteger(sizeFile, "\t");
+//        for (List<Integer> ds: dataset2Size){
+//            int dataset = ds.get(0);
+//            if (dataset < start || dataset > end) {
+//                continue;
+//            }
+//            int MAX_SIZE = ds.get(1);
+//            System.out.println("========" + dataset + ": " + MAX_SIZE  + "========");
+//            OPTRank finder = new OPTRank(dataset, MAX_SIZE); // ======== MAX_SIZE ========
+//            List<ResultBean> runningInfos = new ArrayList<>();
+//            long runTime = timoutService(finder, dataset, runningInfos, TIMEOUT);//finder
+//            boolean timeout = (runTime == Long.MAX_VALUE);
+//            if (timeout) {
+//                System.out.println("Time out");
+//                Set<Integer> ids = new HashSet<>();
+//                StringBuilder triplestr = new StringBuilder();
+//                Set<OPTTriple> result = finder.result;
+//                if (result.isEmpty()) {
+//                    result = finder.currentSnippet;
+//                }
+//                for (OPTTriple iter: result){
+//                    int sid = iter.getSid();
+//                    int oid = iter.getOid();
+//                    int pid = iter.getPid();
+//                    ids.add(sid);
+//                    ids.add(oid);
+//                    triplestr.append(sid).append(" ").append(oid).append(" ").append(pid).append(",");
+//                }
+//                StringBuilder idstr = new StringBuilder();
+//                for (int iter: ids){
+//                    idstr.append(iter).append(",");
+//                }
+//                String snippetstr = "";
+//                if (!idstr.toString().equals("")) {
+//                    snippetstr = idstr.substring(0, idstr.length() - 1) + ";" + triplestr.substring(0, triplestr.length() - 1);
+//                }
+//                ResultBean bean = new ResultBean(dataset, snippetstr, TIMEOUT);
+//                saveResult(bean, resultFolder);
+//                continue;
+//            }
+//            System.out.println("Finish in: " + runTime + " ms. ");
+//            ResultBean middleRuntimeBean = runningInfos.get(0);
+//            saveResult(middleRuntimeBean, resultFolder);
+//        }
+//    }
 
     private void getResultBase(String timeFilePath){
         Set<Integer> dones = new HashSet<>();
@@ -95,7 +95,8 @@ public class generateTest {
                         System.out.println("Time out: " + dataset_id);
                         Set<Integer> ids = new HashSet<>();
                         StringBuilder triplestr = new StringBuilder();
-                        Set<OPTTriple> result = finder.result;
+//                        Set<OPTTriple> result = finder.result;
+                        ArrayList<OPTTriple> result = finder.result;
                         if (result.isEmpty()) {
                             result = finder.currentSnippet;
                         }
@@ -161,7 +162,7 @@ public class generateTest {
 
     private void saveResult(ResultBean bean, String timeFilePath) {
         try {
-            String sql = String.format("INSERT INTO IlluSnip_2(dataset_id,snippet) values(%d,?)",bean.getDataset());
+            String sql = String.format("INSERT INTO IlluSnip_3(dataset_id,snippet) values(%d,?)",bean.getDataset());
 
             PreparedStatement pst = dashConn.prepareStatement(sql);
             pst.setString(1, bean.getSnippet());
@@ -201,7 +202,8 @@ public class generateTest {
         public long lastTime = Long.MAX_VALUE;
         OPTRank finder;
         int datasetId;
-        Set<OPTTriple> result;
+//        Set<OPTTriple> result;
+        ArrayList<OPTTriple> result;
         List<ResultBean> runningInfos;
         public CustomedThread(OPTRank finder, int datasetId, List<ResultBean> runningInfos) {
             super();
@@ -243,8 +245,8 @@ public class generateTest {
 
     public static void main(String[] args){
         generateTest test = new generateTest();
-//        test.getResultBase("C:\\Users\\17223\\Desktop\\websoft\\code\\IlluSnip\\src\\main\\resources\\opt_max_deduplicate.txt");
-        test.getResultBase("/home/wqluo/file/opt_max_result_deduplicate.txt");
+        test.getResultBase("C:\\Users\\17223\\Desktop\\websoft\\code\\IlluSnip\\src\\main\\resources\\tmp4.txt");
+//        test.getResultBase("/home/wqluo/file/opt_max_result_deduplicate.txt");
 //        test.getResultBase("/home/wqluo/file/opt_max_result.tsv");
 //        test.getResultBase("IlluSnip-file-1088.txt");
 
