@@ -28,9 +28,11 @@ public class OPTRank {
         return System.currentTimeMillis() - t0;
     }
 
-    public Set<OPTTriple> result = new HashSet<>();//anytime snippet
-    public Set<OPTTriple> currentSnippet = new HashSet<>();
-    
+//    public Set<OPTTriple> result = new HashSet<>();//anytime snippet
+    public ArrayList<OPTTriple> result = new ArrayList<OPTTriple>();
+//    public Set<OPTTriple> currentSnippet = new HashSet<>();
+    public ArrayList<OPTTriple> currentSnippet = new ArrayList<>();
+
     private final int local_id;
     private int MAX_SIZE;
     private int typeId;
@@ -143,7 +145,7 @@ public class OPTRank {
         //heap is fixed, and can't be modified. Elements can only be CLONED to neighbor set.
         OPTTriple init = Collections.max(heap); // heap.get(i);
         int i = heap.indexOf(init);
-        currentSnippet = new HashSet<>();
+        currentSnippet = new ArrayList<>(); // new HashSet<>();
         double currentScore = 0;
         int currentSize = 0;
         HashSet<Integer> coveredProperty = new HashSet<>();
